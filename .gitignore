@@ -1,1 +1,8 @@
+# DB
 *.sqlite3
+
+# Cache directory
+*/__pycache__
+
+# migration directory
+migrations
