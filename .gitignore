@@ -4,6 +4,5 @@
 # Cache directory
 */__pycache__
 *.pyc
-
 # migration directory
 migrations
