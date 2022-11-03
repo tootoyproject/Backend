@@ -1,4 +1,9 @@
-#### Need to use decoding : <span style='color:red'>"euc-kr"</span>
+### Toy Project
+
+#### Skills : <span style='color:gray'>Python, django, DRF(django rest framework)</span>
+
+
+##### Need to use decoding : <span style='color:red'>"euc-kr"</span>
 
 
 ### Example :
