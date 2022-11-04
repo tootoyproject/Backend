@@ -26,5 +26,4 @@ urlpatterns = [
     path('app/', include(router.urls)),
     path('app/posts/list', views.PostsList.as_view()),
     path('app/posts/<int:pk>', views.PostsDetail.as_view()),
-    path('app/posts/<int:pk>/', views.PostsDetail.as_view()),
 ]

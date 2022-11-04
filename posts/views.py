@@ -2,7 +2,6 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.renderers import JSONRenderer
 from django.http.response import HttpResponse
 from django.http import Http404
 from .serializers import PostsSerializer
@@ -13,8 +12,6 @@ class PostsViewSet(viewsets.ModelViewSet):
    serializer_class = PostsSerializer
 
 class PostsList(APIView):
-
-   renderer_classes = [JSONRenderer]
 
    def get(self, request):
       posts = Posts.objects.all()
