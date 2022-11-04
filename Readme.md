@@ -1,5 +1,12 @@
 ### Toy Project
 
+```mermaid
+erDiagram
+    Posts ||--o{ postid : places
+    postid ||--|| title : places
+    title ||--|| content : uses
+
+```
 #### Skills : <span style='color:gray'>Python, django, DRF(django rest framework)</span>
 
 
