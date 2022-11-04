@@ -1,5 +1,6 @@
 ### Toy Project
 
+#### ERD (our project) : 
 ```mermaid
 erDiagram
     Posts ||--o{ postid : places
