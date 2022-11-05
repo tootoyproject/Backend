@@ -23,7 +23,7 @@ class PostsList(APIView):
       serializer = PostsSerializer(data=request.data)
       if serializer.is_valid():
          serializer.save()
-         return Response(serializer.data, status=status.HTTP_201_CREATED)
+         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PostsDetail(APIView):
@@ -44,11 +44,10 @@ class PostsDetail(APIView):
       serializer = PostsSerializer(posts, data=request.data)
       if serializer.is_valid():
          serializer.save()
-         async_to_sync(channel_layer.group_send)("Posts", {"type": "Posts.system_message", "text": "불가"})
          return Response(serializer.data)
       return Response(serializer.errors, status=status.HTTP_304_NOT_MODIFIED, )
    
    def delete(self, request, pk):
       posts = self.get_object(pk)
       posts.delete()
-      return Response(data={"detail":"성공"},status=status.HTTP_204_NO_CONTENT)
+      return Response(status=status.HTTP_204_NO_CONTENT)

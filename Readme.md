@@ -3,9 +3,9 @@
 #### ERD (our project) : 
 ```mermaid
 erDiagram
-    Posts ||--o{ postid : post
+    Posts ||--o{ postid : PK
     postid ||--|| title : title
-    title ||--|| content : content
+    postid ||--|| content : content
 
 ```
 #### Skills : <span style='color:gray'>Python, django, DRF(django rest framework)</span>
