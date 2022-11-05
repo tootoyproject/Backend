@@ -1,11 +1,11 @@
 ### Toy Project
 
-#### ERD (our project) : 
+#### ERD (project) : 
 ```mermaid
 erDiagram
     Posts ||--o{ postid : PK
-    postid ||--|| title : title
-    postid ||--|| content : content
+    postid ||--|| title : attrs
+    postid ||--|| content : attrs
 
 ```
 #### Skills : <span style='color:gray'>Python, django, DRF(django rest framework)</span>
