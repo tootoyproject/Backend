@@ -1,4 +1,4 @@
-"""app URL Configuration
+"""api URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
@@ -23,7 +23,7 @@ router.register(r'posts',views.PostsViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('app/', include(router.urls)),
-    path('app/posts/list', views.PostsList.as_view()),
-    path('app/posts/<int:pk>', views.PostsDetail.as_view()),
+    path('api/', include(router.urls)),
+    path('api/posts/list', views.PostsList.as_view()),
+    path('api/posts/<int:pk>', views.PostsDetail.as_view()),
 ]
