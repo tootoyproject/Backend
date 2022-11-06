@@ -24,6 +24,7 @@ router.register(r'posts',views.PostsViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/posts', views.PostsList.as_view()),
     path('api/posts/list', views.PostsList.as_view()),
     path('api/posts/<int:pk>', views.PostsDetail.as_view()),
 ]

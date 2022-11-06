@@ -2,9 +2,9 @@ from rest_framework.views import exception_handler
 
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
-    code = response.status_code
     if response is not None:
         if code == 400:
+            code = response.status_code
             response.data['status'] = code
             response.data['msg'] = '게시글 작성에 실패하셨습니다.'
         elif code == 304:

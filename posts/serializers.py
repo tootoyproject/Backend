@@ -4,7 +4,7 @@ from .models import Posts
 class PostsSerializer(serializers.ModelSerializer) :
         class Meta:
             model = Posts
-            fields = ['postid', 'title', 'content']
+            fields = ['postId', 'title', 'content']
             
     # postid = serializers.IntegerField(read_only=True)
     # title = serializers.CharField(max_length=200)

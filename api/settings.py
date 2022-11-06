@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-2d#vz32jr1*7u%=#p93d7b!7^vk5l_+$nmr5x0mg-*@@y6yk*c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["34.219.92.254"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     "posts"
 ]
 
@@ -57,7 +58,7 @@ ROOT_URLCONF = "api.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ['api/templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Posts(models.Model):
-    postid = models.BigAutoField(
+    postId = models.BigAutoField(
         auto_created=True,
         primary_key=True,
         serialize=False,

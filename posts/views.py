@@ -39,7 +39,6 @@ class PostsDetail(APIView):
       return Response(serializer.data)
    
    def put(self, request, pk):
-      channel_layer = get_channel_layer()
       posts = self.get_object(pk)
       serializer = PostsSerializer(posts, data=request.data)
       if serializer.is_valid():
