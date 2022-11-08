@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from posts import views
+from users.views import JWTSignupView
 
 router = routers.DefaultRouter()
 router.register(r'posts',views.PostsViewSet)
@@ -25,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/posts', views.PostsList.as_view()),
+    path('api/users/signup',JWTSignupView.as_view()),
     path('api/posts/list', views.PostsList.as_view()),
     path('api/posts/<int:pk>', views.PostsDetail.as_view()),
 ]
