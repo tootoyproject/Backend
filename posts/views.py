@@ -6,8 +6,6 @@ from django.http.response import HttpResponse
 from django.http import Http404
 from .serializers import PostsSerializer
 from .models import Posts
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 
 class PostsViewSet(viewsets.ModelViewSet):
    queryset = Posts.objects.all()
