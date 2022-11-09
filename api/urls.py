@@ -16,19 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from posts import views
-from users.views import JWTSignupView
+from posts.views import PostsViewSet, PostsList, PostsDetail
+from users.views import JWTSignupView, JWTLoginView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 router = routers.DefaultRouter()
-router.register(r'lists',views.PostsViewSet)
+router.register(r'lists', PostsViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/users/signup',JWTSignupView.as_view()),
-    path('api/posts', views.PostsList.as_view()),
-    path('api/posts/<int:pk>', views.PostsDetail.as_view()),
+    path('api/posts', PostsList.as_view()),
+    path('api/posts/<int:pk>', PostsDetail.as_view()),
+    path('api/login', JWTLoginView.as_view()),
+    path('api/signup/', JWTSignupView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
