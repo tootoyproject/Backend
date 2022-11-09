@@ -4,5 +4,9 @@
 # Cache directory
 */__pycache__
 *.pyc
+
 # migration directory
 migrations
+
+# virtual env
+/venv
