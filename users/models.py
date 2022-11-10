@@ -1,12 +1,17 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth.models import PermissionsMixin
-from django.contrib.auth.base_user import AbstractBaseUser
+from django.utils.translation import gettext_lazy as _
 
+from .manager import UserManager
 
-# Create your models here.
+class Users(AbstractUser):
+    username = None
+    email = models.EmailField(_('email address'), unique=True)
 
-class Users(models.Model):
-    username = models.CharField(max_length=50,)
-    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
+
     def __str__(self):
-        return self.username
+        return self.email

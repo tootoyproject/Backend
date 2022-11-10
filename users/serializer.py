@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 # Signup
 class JWTSignupSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(
+    username = serializers.CharField(
         required=True,
         write_only=True,
         max_length=20
@@ -14,7 +14,8 @@ class JWTSignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         required=True,
         write_only=True,
-        style={'input_type': 'password'}
+        style={'input_type': 'password'},
+        
     )
     
 
@@ -25,7 +26,7 @@ class JWTSignupSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = Users
-        fields = ['id', 'password', 'subscription_date']
+        fields = ['username', 'password', 'subscription_date']
 
     def save(self, request):
         user = super().save()
@@ -39,9 +40,9 @@ class JWTSignupSerializer(serializers.ModelSerializer):
         return user
 
     def validate(self, data):
-        id = data.get('id', None)
+        username = data.get('username', None)
 
-        if Users.objects.filter(id=id).exists():
+        if Users.objects.filter(username=username).exists():
             raise serializers.ValidationError("user already exists")
 
         data['subscription_date'] = timezone.now()
@@ -51,7 +52,7 @@ class JWTSignupSerializer(serializers.ModelSerializer):
 # Login
 
 class JWTLoginSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(
+    username = serializers.CharField(
         required=True,
         write_only=True,
     )
@@ -59,7 +60,7 @@ class JWTLoginSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         required=True,
         write_only=True,
-        style={'input_type': 'password'}
+        style={'input_type': 'password'},
     )
     
     class Meta(object):
@@ -67,11 +68,11 @@ class JWTLoginSerializer(serializers.ModelSerializer):
         fields = ['phone', 'password']
     
     def validate(self, data):
-        id = data.get('id', None)
+        username = data.get('username', None)
         password = data.get('password', None)
 
-        if Users.objects.filter(id=id).exists():
-            user = Users.objects.get(id=id)
+        if Users.objects.filter(username=username).exists():
+            user = Users.objects.get(username=username)
 
             if not user.check_password(password):
                 raise serializers.ValidationError("wrong password")

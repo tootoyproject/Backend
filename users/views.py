@@ -1,5 +1,4 @@
 from .serializer import JWTSignupSerializer, JWTLoginSerializer
-from django.shortcuts import render
 from django.http.response import JsonResponse
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
