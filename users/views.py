@@ -1,42 +1,32 @@
-from .serializer import JWTSignupSerializer, JWTLoginSerializer
+from .serializer import UserCreateSerializer, UserLoginSerializer
 from django.http.response import JsonResponse
-from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
+from django.db import IntegrityError
+from rest_framework.views import APIView, Response
+from rest_framework import status
 
 # Create your views here.
 
-class JWTSignupView(APIView):
-    serializer_class = JWTSignupSerializer
-
+class UserCreateView(APIView):
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        try:
+            serializer = UserCreateSerializer(data=request.data) 
+            if serializer.is_valid(raise_exception=True):
+                serializer.save() # DB 저장
+                return Response({"msg":"회원가입에 성공하셨습니다.","status" : 200}, status=201)
+        except IntegrityError:
+            return Response({"msg" : "회원가입에 실패하셨습니다. (이미 존재하는 아이디)","status" : 400})
 
-        if serializer.is_valid(raise_exception=False):
-            user = serializer.save(request)
-
-            token = RefreshToken.for_user(user)
-            refresh = str(token)
-            access = str(token.access_token)
-
-            return JsonResponse({'user': user,
-                                 'access': access,
-                                 'refresh': refresh})
-        else:
-            JsonResponse({'Text':'실패'})
-
-class JWTLoginView(APIView):
-    serializer_class = JWTLoginSerializer
-
+class UserLoginView(APIView):
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = UserLoginSerializer(data=request.data)
 
-        if serializer.is_valid(raise_exception=False):
-            user = serializer.validated_data['user']
-            access = serializer.validated_data['access']
-            refresh = serializer.validated_data['refresh']
+        if not serializer.is_valid(raise_exception=True):
+            return Response({"msg": "로그인에 실패했습니다.","status" : 400}, status=status.HTTP_409_CONFLICT)
+        if serializer.validated_data['username'] == "None": # username required
+            return Response({'msg': "로그인에 실패했습니다.(아이디 또는 비밀번호가 틀림)","status" : 400}, status=status.HTTP_200_OK)
 
-            return JsonResponse({'user': user,
-                                'access': access,
-                                'refresh': refresh})
-        else:
-            JsonResponse({'Text':'실패'})
+        response = {
+            'success': True,
+            'token': serializer.data['token'] # 시리얼라이저에서 받은 토큰 전달
+        }
+        return Response(response, status=status.HTTP_200_OK)

@@ -1,92 +1,51 @@
 from rest_framework import serializers
 from .models import Users
-from django.utils import timezone
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_jwt.settings import api_settings
+from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth.models import update_last_login
 
 # Signup
-class JWTSignupSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(
-        required=True,
-        write_only=True,
-        max_length=20
-    )
+Users = get_user_model()
 
-    password = serializers.CharField(
-        required=True,
-        write_only=True,
-        style={'input_type': 'password'},
-        
-    )
-    
-
-    subscription_date = serializers.DateField(
-        required=False,
-        write_only=True,
-    )
-
-    class Meta(object):
-        model = Users
-        fields = ['username', 'password', 'subscription_date']
-
-    def save(self, request):
-        user = super().save()
-
-        user.id = self.validated_data['id']
-        user.subscription_date = self.validated_data['subscription_date']
-
-        user.set_password(self.validated_data['password'])
+class UserCreateSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+    def create(self, validated_data):
+        user = Users.objects.create( # User 생성
+            username=validated_data['username'],
+        )
+        user.set_password(validated_data['password'])
         user.save()
-
         return user
-
-    def validate(self, data):
-        username = data.get('username', None)
-
-        if Users.objects.filter(username=username).exists():
-            raise serializers.ValidationError("user already exists")
-
-        data['subscription_date'] = timezone.now()
-
-        return data
 
 # Login
 
-class JWTLoginSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(
-        required=True,
-        write_only=True,
-    )
+JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
+JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
-    password = serializers.CharField(
-        required=True,
-        write_only=True,
-        style={'input_type': 'password'},
-    )
-    
-    class Meta(object):
-        model = Users
-        fields = ['phone', 'password']
-    
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=30)
+    password = serializers.CharField(max_length=128, write_only=True)
+    token = serializers.CharField(max_length=255, read_only=True)
+
     def validate(self, data):
-        username = data.get('username', None)
-        password = data.get('password', None)
+        username = data.get("username", None)
+        password = data.get("password", None)
+        user = authenticate(username=username, password=password)
 
-        if Users.objects.filter(username=username).exists():
-            user = Users.objects.get(username=username)
-
-            if not user.check_password(password):
-                raise serializers.ValidationError("wrong password")
-        else:
-            raise serializers.ValidationError("user account not exist")
-        
-        token = RefreshToken.for_user(user)
-        refresh = str(token)
-        access = str(token.access_token)
-
-        data = {
-            'user': user,
-            'refresh': refresh,
-            'access': access,
-        }
-
-        return data
+        if user is None:
+            return {
+                'username': 'None'
+            }
+        try:
+            payload = JWT_PAYLOAD_HANDLER(user)
+            jwt_token = JWT_ENCODE_HANDLER(payload) # 토큰 발행
+            update_last_login(None, user)
+        except Users.DoesNotExist:
+            raise serializers.ValidationError(
+                'User with given username and password does not exists'
+            )
+        return {
+            'username': user.username,
+            'token': jwt_token
+            }

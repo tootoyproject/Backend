@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from posts.views import PostsViewSet, PostsList, PostsDetail
+from posts.views import PostsViewSet
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
@@ -26,8 +26,7 @@ router.register(r'lists', PostsViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/posts', PostsList.as_view()),
-    path('api/posts/<int:pk>', PostsDetail.as_view()),
+    path('api/posts/', include('posts.urls')),
     path('api/users/', include('users.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
