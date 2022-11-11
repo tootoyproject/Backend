@@ -14,7 +14,7 @@ class UserCreateView(APIView):
                 serializer.save() # DB 저장
                 return Response({"msg":"회원가입에 성공하셨습니다.","status" : 200}, status=201)
         except IntegrityError:
-            return Response({"msg" : "회원가입에 실패하셨습니다", "status" : 400})
+            return Response({"msg" : "회원가입에 실패하셨습니다 (아이디가 존재)", "status" : 400})
 
 class UserLoginView(APIView):
     def post(self, request):

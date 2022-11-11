@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from .manager import UserManager
 
 class Users(AbstractUser):
+    username = None
+
     id = models.CharField(
         unique=True,
         max_length=30,
