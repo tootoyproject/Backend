@@ -20,8 +20,8 @@ class PostsList(APIView):
       serializer = PostsSerializer(data=request.data)
       if serializer.is_valid():
          serializer.save()
-         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+         return Response({"status" : 200, "msg": "게시글 작성에 성공하셨습니다."}, status=status.HTTP_201_CREATED)
+      return Response({"status" : 400, "msg": "게시글 작성에 실패하셨습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 class PostsDetail(APIView):
    def get_object(self, pk):
@@ -40,10 +40,10 @@ class PostsDetail(APIView):
       serializer = PostsSerializer(posts, data=request.data)
       if serializer.is_valid():
          serializer.save()
-         return Response(serializer.data)
-      return Response(serializer.errors, status=status.HTTP_304_NOT_MODIFIED, )
+         return Response({"status" : 200, "msg": "게시글 수정에 성공하셨습니다."}, status=status.HTTP_202_ACCEPTED,)
+      return Response({"status" : 400, "msg": "게시글 수정에 실패하셨습니다."}, status=status.HTTP_304_NOT_MODIFIED, )
    
    def delete(self, request, pk):
       posts = self.get_object(pk)
       posts.delete()
-      return Response(status=status.HTTP_204_NO_CONTENT)
+      return Response({"status" : 200, "msg": "게시글 삭제에 성공하셨습니다."},status=status.HTTP_204_NO_CONTENT)
