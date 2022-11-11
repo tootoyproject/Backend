@@ -14,7 +14,7 @@ class UserCreateView(APIView):
                 serializer.save() # DB 저장
                 return Response({"msg":"회원가입에 성공하셨습니다.","status" : 200}, status=201)
         except IntegrityError:
-            return Response({"msg" : "회원가입에 실패하셨습니다. (이미 존재하는 아이디)","status" : 400})
+            return Response({"msg" : "회원가입에 실패하셨습니다", "status" : 400})
 
 class UserLoginView(APIView):
     def post(self, request):
@@ -23,7 +23,7 @@ class UserLoginView(APIView):
         if not serializer.is_valid(raise_exception=True):
             return Response({"msg": "로그인에 실패했습니다.","status" : 400}, status=status.HTTP_409_CONFLICT)
         if serializer.validated_data["id"] == "None": # username required
-            return Response({"msg": "로그인에 실패했습니다.(아이디 또는 비밀번호가 틀림)","status" : 400}, status=status.HTTP_200_OK)
+            return Response({"msg": "로그인에 실패했습니다.(아이디가 없거나 비밀번호가 틀림)","status" : 400}, status=status.HTTP_200_OK)
 
         response = {
             "status": 200,
