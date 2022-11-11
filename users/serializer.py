@@ -8,11 +8,11 @@ from django.contrib.auth.models import update_last_login
 Users = get_user_model()
 
 class UserCreateSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
+    id = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
     def create(self, validated_data):
         user = Users.objects.create( # User 생성
-            username=validated_data['username'],
+            id=validated_data['id'],
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -24,18 +24,18 @@ JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
 JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=30)
+    id = serializers.CharField(max_length=30)
     password = serializers.CharField(max_length=128, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
 
     def validate(self, data):
-        username = data.get("username", None)
+        id = data.get("id", None)
         password = data.get("password", None)
-        user = authenticate(username=username, password=password)
+        user = authenticate(id=id, password=password)
 
         if user is None:
             return {
-                'username': 'None'
+                'id': 'None'
             }
         try:
             payload = JWT_PAYLOAD_HANDLER(user)
@@ -43,9 +43,9 @@ class UserLoginSerializer(serializers.Serializer):
             update_last_login(None, user)
         except Users.DoesNotExist:
             raise serializers.ValidationError(
-                'User with given username and password does not exists'
+                'User with given id and password does not exists'
             )
         return {
-            'username': user.username,
+            'id': user.id,
             'token': jwt_token
             }

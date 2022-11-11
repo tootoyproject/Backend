@@ -22,11 +22,12 @@ class UserLoginView(APIView):
 
         if not serializer.is_valid(raise_exception=True):
             return Response({"msg": "로그인에 실패했습니다.","status" : 400}, status=status.HTTP_409_CONFLICT)
-        if serializer.validated_data['username'] == "None": # username required
-            return Response({'msg': "로그인에 실패했습니다.(아이디 또는 비밀번호가 틀림)","status" : 400}, status=status.HTTP_200_OK)
+        if serializer.validated_data["id"] == "None": # username required
+            return Response({"msg": "로그인에 실패했습니다.(아이디 또는 비밀번호가 틀림)","status" : 400}, status=status.HTTP_200_OK)
 
         response = {
-            'success': True,
-            'token': serializer.data['token'] # 시리얼라이저에서 받은 토큰 전달
+            "status": 200,
+            "msg" : "로그인에 성공하셨습니다.",
+            "accessToken": serializer.data["token"] # 시리얼라이저에서 받은 토큰 전달
         }
         return Response(response, status=status.HTTP_200_OK)

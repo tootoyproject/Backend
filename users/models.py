@@ -6,9 +6,10 @@ from django.utils.translation import gettext_lazy as _
 from .manager import UserManager
 
 class Users(AbstractUser):
-    username = models.CharField(
+    id = models.CharField(
         unique=True,
         max_length=30,
+        primary_key=True
     )
     is_staff = models.BooleanField(
         _('staff status'),
@@ -27,11 +28,11 @@ class Users(AbstractUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'id'
 
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
     def __str__(self):
-        return self.username
+        return self.id
