@@ -3,9 +3,13 @@
 #### ERD (project) : 
 ```mermaid
 erDiagram
+    Users {
+        varchar  id "id(username)"
+    }
+    
     Posts {
         int id  "postid"
-        varchar subject "title"
+        varchar title "title"
         varchar detail "content"
     }
 
