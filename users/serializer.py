@@ -1,51 +1,61 @@
 from rest_framework import serializers
 from .models import Users
-from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Signup
 Users = get_user_model()
 
-class UserCreateSerializer(serializers.Serializer):
-    id = serializers.CharField(required=True)
-    password = serializers.CharField(required=True)
-    def create(self, validated_data):
-        user = Users.objects.create( # User 생성
-            id=validated_data['id'],
-        )
-        user.set_password(validated_data['password'])
+class UserCreateSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(required=True, write_only=True, max_length=20)
+    password = serializers.CharField(required=True, write_only=True,style= {'input_type':'password'})
+
+    class Meta(object):
+        model = Users
+        fields = ['id', 'password']
+
+    def save(self, request):
+        user = super().save()
+        user.id = self.validated_data['id']
+        user.set_password(self.validated_data['password'])
         user.save()
         return user
+    def validate(self, data):
+        id = data.get('id', None)
 
+        if Users.objects.filter(id=id).exists():
+            raise serializers.ValidationError({"msg": "이미 존재하는 계정입니다."})
+
+        return data
 # Login
 
-JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
-JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
-
 class UserLoginSerializer(serializers.Serializer):
-    id = serializers.CharField(max_length=30)
-    password = serializers.CharField(max_length=128, write_only=True)
-    token = serializers.CharField(max_length=255, read_only=True)
+    id = serializers.CharField(required=True, write_only=True, max_length=20)
+    password = serializers.CharField(required=True, write_only=True,style= {'input_type':'password'})
+
+    class Meta(object):
+        model = Users
+        fields = ['id', 'password']
 
     def validate(self, data):
         id = data.get("id", None)
         password = data.get("password", None)
-        user = authenticate(id=id, password=password)
 
-        if user is None:
-            return {
-                'id': 'None'
-            }
-        try:
-            payload = JWT_PAYLOAD_HANDLER(user)
-            jwt_token = JWT_ENCODE_HANDLER(payload) # 토큰 발행
-            update_last_login(None, user)
-        except Users.DoesNotExist:
-            raise serializers.ValidationError(
-                'User with given id and password does not exists'
-            )
-        return {
-            'id': user.id,
-            'token': jwt_token
-            }
+        if Users.objects.filter(id=id).exists():
+            user = Users.objects.get(id=id)
+            if not user.check_password(password):
+                raise serializers.ValidationError({"msg":"틀린 비밀번호입니다."})
+        else:
+            raise serializers.ValidationError({"msg":"계정이 존재하지 않습니다."})
+        
+        token = RefreshToken.for_user(user)
+        refresh = str(token)
+        access = str(token.access_token)
+
+        data = {
+            'user' : str(user),
+            'refresh' : refresh,
+            'access' : access
+        }
+        return data
