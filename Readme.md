@@ -4,21 +4,18 @@
 ```mermaid
 erDiagram
     Users {
-        varchar  id "id(username)"
+        id varchar
+        password varchar
     }
     
     Posts {
-        int id  "postid"
-        varchar title "title"
-        varchar detail "content"
+        postId int
+        title varchar
+        content varchar
     }
 
 ```
 #### Skills : <span style='color:gray'>Python, django, DRF(django rest framework)</span>
-
-
-##### Optionally need to use decoding : <span style='color:red'>"euc-kr"</span>
-
 
 ### Example :
 #### How to run the server :
