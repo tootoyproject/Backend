@@ -24,11 +24,12 @@ from drf_yasg import openapi
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 router = routers.DefaultRouter()
-router.register(r'lists', PostsViewSet)
+router.register(r'lists', PostsViewSet, basename= '')
 
 schema_url_patterns = [ 
-    path('', include('posts.urls')),
-    path('', include('users.urls')),
+    path('api/', include(router.urls)),
+    path('api/posts/', include('posts.urls')),
+    path('api/users/', include('users.urls')),
     ]
 
 schema_view_v1 = get_schema_view(
